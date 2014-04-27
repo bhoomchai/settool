@@ -4,5 +4,9 @@
     <string name="app_name">SetFeeder</string>
     <string name="action_settings">Settings</string>
     <string name="add_stock">Add</string>
+    <string name="symbol">Symbol: </string>
+    <string name="stock_hint">Enter Stock Symbol</string>
+    <string name="button_cancel">Cancel</string>
+    <string name="button_submit">Submit</string>
 
 </resources>

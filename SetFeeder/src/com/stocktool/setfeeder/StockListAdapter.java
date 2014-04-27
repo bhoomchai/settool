@@ -62,12 +62,12 @@ public class StockListAdapter extends BaseAdapter {
 		LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		RelativeLayout itemLayout = (RelativeLayout) inflater.inflate(R.layout.stock_item, null);
 		
-		final TextView titleView = (TextView) itemLayout.findViewById(R.id.titleView);
+		final TextView titleView = (TextView) itemLayout.findViewById(R.id.stockSymbol);
 		titleView.setText(stock.getSymbol());
+		titleView.setBackgroundColor(0);
 		
 		
-		
-		return null;
+		return itemLayout;
 	}
 
 }
