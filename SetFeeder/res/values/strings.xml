@@ -8,5 +8,8 @@
     <string name="stock_hint">Enter Stock Symbol</string>
     <string name="button_cancel">Cancel</string>
     <string name="button_submit">Submit</string>
+    <string name="header_symbol">Stock</string>
+    <string name="header_price">Price</string>
+    <string name="header_change">Change</string>
 
 </resources>

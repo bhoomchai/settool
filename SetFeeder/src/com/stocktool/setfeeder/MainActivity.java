@@ -3,20 +3,24 @@ package com.stocktool.setfeeder;
 import com.stocktool.setfeeder.data.Stock;
 
 import android.os.Bundle;
-import android.app.Activity;
 import android.app.ListActivity;
 import android.content.Intent;
-import android.util.Log;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends ListActivity {
 
 	private static final int ADD_STOCK_REQUST = 0;
 	StockListAdapter mAdapter;
+	private GestureDetector mGestureDetector;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -24,6 +28,8 @@ public class MainActivity extends ListActivity {
 		getListView().setFooterDividersEnabled(true);
 		LayoutInflater inflater = getLayoutInflater();
 		TextView footerView = (TextView) inflater.inflate(R.layout.footer_view, null);
+		View headerView = inflater.inflate(R.layout.header_view, null);
+		getListView().addHeaderView(headerView);
 		getListView().addFooterView(footerView);
 		footerView.setOnClickListener(new OnClickListener() {
 			@Override
@@ -31,10 +37,54 @@ public class MainActivity extends ListActivity {
 				Intent intent = new Intent(getBaseContext(), AddStockActivity.class);
 				startActivityForResult(intent, ADD_STOCK_REQUST);	
 			}
-		});
+		});		
+		getListView().setAdapter(mAdapter);	
 		
-		getListView().setAdapter(mAdapter);		
+		mGestureDetector = new GestureDetector(this, 
+			new GestureDetector.SimpleOnGestureListener() {
+				@Override
+				public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+					if (velocityX < -10.0f) {						
+						int position = getListView().pointToPosition((int)e1.getX(), (int)e1.getY());						
+						showSwipeItem(position);
+					}					
+					int position = getListView().pointToPosition((int)e1.getX(), (int)e1.getY());						
+					showSwipeItem(position);
+					return true;
+				}
+				@Override
+				public void onLongPress(MotionEvent e) {
+					int position = getListView().pointToPosition((int)e.getX(), (int)e.getY());						
+					showSwipeItem(position);
+				}
+				@Override
+				public boolean onDoubleTap(MotionEvent e) {
+					int position = getListView().pointToPosition((int)e.getX(), (int)e.getY());						
+					showSwipeItem(position);
+					return true;
+				}
+			}
+		);
+		getListView().setOnTouchListener(new View.OnTouchListener() {
+			
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				int position = getListView().pointToPosition((int)event.getX(), (int)event.getY());						
+				showSwipeItem(position);
+				return true;
+			}
+		});
 	}
+	
+	public void showSwipeItem(int position) {
+		Toast.makeText(this, ((TextView)getListView().getChildAt(position)).getText(), Toast.LENGTH_LONG).show();		
+	}
+	
+	@Override
+	public boolean onTouchEvent(MotionEvent event) {
+		return mGestureDetector.onTouchEvent(event);
+	};
+	
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -75,4 +125,6 @@ public class MainActivity extends ListActivity {
 	private void saveItems() {
 	
 	}
+	
+	
 }

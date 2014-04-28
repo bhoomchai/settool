@@ -38,6 +38,7 @@ public class AddStockActivity extends Activity {
 				finish();
 			}
 		});
+		
 	}
 	
 	
