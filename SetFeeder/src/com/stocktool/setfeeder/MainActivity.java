@@ -40,6 +40,17 @@ public class MainActivity extends ListActivity {
 		});		
 		getListView().setAdapter(mAdapter);			
 		setupGestureDetector();
+		getListView().setOnTouchListener(new View.OnTouchListener() {
+			
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				boolean handled = false;
+				if(mGestureDetector != null) {
+					handled = mGestureDetector.onTouchEvent(event);
+				}
+				return handled;
+			}
+		});
 	}
 	
 	private void setupGestureDetector() {
@@ -49,21 +60,8 @@ public class MainActivity extends ListActivity {
 					public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
 						if (velocityX < -10.0f) {						
 							int position = getListView().pointToPosition((int)e1.getX(), (int)e1.getY());						
-							showSwipeItem(position);
+							removeSwipeItem(position);
 						}					
-						int position = getListView().pointToPosition((int)e1.getX(), (int)e1.getY());						
-						showSwipeItem(position);
-						return true;
-					}
-					@Override
-					public void onLongPress(MotionEvent e) {
-						int position = getListView().pointToPosition((int)e.getX(), (int)e.getY());						
-						showSwipeItem(position);
-					}
-					@Override
-					public boolean onDoubleTap(MotionEvent e) {
-						int position = getListView().pointToPosition((int)e.getX(), (int)e.getY());						
-						showSwipeItem(position);
 						return true;
 					}
 					 @Override
@@ -74,9 +72,11 @@ public class MainActivity extends ListActivity {
 			);
 	}
 	
-	private void showSwipeItem(int position) {
-		if(position != -1)
-			Toast.makeText(this, ((Stock)getListView().getAdapter().getItem(position)).getSymbol(), Toast.LENGTH_SHORT).show();		
+	private void removeSwipeItem(int position) {
+		if(position != -1) {
+			Toast.makeText(this, ((Stock)getListView().getAdapter().getItem(position)).getSymbol() + " is removed", Toast.LENGTH_SHORT).show();
+			mAdapter.remove((Stock)getListView().getAdapter().getItem(position));
+		}
 	}
 	
 	@Override
