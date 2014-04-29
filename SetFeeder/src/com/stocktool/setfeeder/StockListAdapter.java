@@ -1,8 +1,11 @@
 package com.stocktool.setfeeder;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import com.stocktool.setfeeder.data.Stock;
+import com.stocktool.setfeeder.service.StockPriceService;
+
 import android.content.Context;
 import android.graphics.Color;
 import android.view.LayoutInflater;
@@ -23,6 +26,12 @@ public class StockListAdapter extends BaseAdapter {
 		mContext = context;
 		mItems.add(new Stock("AP"));
 		mItems.add(new Stock("ASP"));
+		try {
+			updatePrice();
+		}
+		catch(IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void add(Stock stock) {
@@ -88,6 +97,10 @@ public class StockListAdapter extends BaseAdapter {
 		}
 		else
 			return Color.rgb(255, 165, 0);			
+	}
+	
+	public void updatePrice() throws IOException{
+		StockPriceService.getPrices(mItems);
 	}
 
 }

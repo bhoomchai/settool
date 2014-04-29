@@ -1,5 +1,7 @@
 package com.stocktool.setfeeder;
 
+import java.io.IOException;
+
 import com.stocktool.setfeeder.data.Stock;
 
 import android.os.Bundle;
@@ -22,9 +24,10 @@ public class MainActivity extends ListActivity {
 	private GestureDetectorCompat mGestureDetector;
 	
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	protected void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 		mAdapter = new StockListAdapter(getApplicationContext());
+		
 		getListView().setFooterDividersEnabled(true);
 		LayoutInflater inflater = getLayoutInflater();
 		TextView footerView = (TextView) inflater.inflate(R.layout.footer_view, null);
