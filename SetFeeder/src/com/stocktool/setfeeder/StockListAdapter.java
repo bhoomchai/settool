@@ -1,8 +1,12 @@
 package com.stocktool.setfeeder;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
 import com.stocktool.setfeeder.data.Stock;
+import com.stocktool.setfeeder.service.StockPriceService;
+
 import android.content.Context;
 import android.graphics.Color;
 import android.view.LayoutInflater;
@@ -10,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 
 public class StockListAdapter extends BaseAdapter {
@@ -23,6 +28,8 @@ public class StockListAdapter extends BaseAdapter {
 		mContext = context;
 		mItems.add(new Stock("AP"));
 		mItems.add(new Stock("ASP"));
+		mItems.add(new Stock("CPF"));
+		mItems.add(new Stock("CPALL"));
 	}
 	
 	public void add(Stock stock) {
@@ -71,7 +78,7 @@ public class StockListAdapter extends BaseAdapter {
 		priceView.setTextColor(Color.BLACK);
 		
 		final TextView changeView = (TextView) itemLayout.findViewById(R.id.stockChange);
-		changeView.setText(stock.getChange());
+		changeView.setText(stock.getChange()+" ("+stock.getPercentChange()+"%)");
 		changeView.setTextColor(getTextColorFromString(stock.getChange()));
 				
 		
@@ -81,13 +88,18 @@ public class StockListAdapter extends BaseAdapter {
 	
 	private int getTextColorFromString(String text) {
 		if(text.contains("+")) {
-			return Color.GREEN;
+			return Color.rgb(0, 100, 0);
 		}
 		else if(text.contains("-")){
-			return Color.RED;
+			return Color.rgb(150, 0, 0);
 		}
 		else
-			return Color.rgb(255, 165, 0);			
+			return Color.rgb(200, 100, 0);			
+	}
+	
+	
+	public List<Stock> getStockList() {
+		return mItems;
 	}
 
 }

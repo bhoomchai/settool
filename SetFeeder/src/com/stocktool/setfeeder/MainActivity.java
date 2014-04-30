@@ -1,6 +1,9 @@
 package com.stocktool.setfeeder;
 
+import java.io.IOException;
+
 import com.stocktool.setfeeder.data.Stock;
+import com.stocktool.setfeeder.service.StockPriceService;
 
 import android.os.Bundle;
 import android.app.ListActivity;
@@ -22,9 +25,10 @@ public class MainActivity extends ListActivity {
 	private GestureDetectorCompat mGestureDetector;
 	
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	protected void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 		mAdapter = new StockListAdapter(getApplicationContext());
+		
 		getListView().setFooterDividersEnabled(true);
 		LayoutInflater inflater = getLayoutInflater();
 		TextView footerView = (TextView) inflater.inflate(R.layout.footer_view, null);
@@ -38,7 +42,8 @@ public class MainActivity extends ListActivity {
 				startActivityForResult(intent, ADD_STOCK_REQUST);	
 			}
 		});		
-		getListView().setAdapter(mAdapter);			
+		getListView().setAdapter(mAdapter);
+		updatePrice();
 		setupGestureDetector();
 		getListView().setOnTouchListener(new View.OnTouchListener() {
 			
@@ -58,7 +63,7 @@ public class MainActivity extends ListActivity {
 				new GestureDetector.SimpleOnGestureListener () {
 					@Override
 					public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-						if (velocityX < -10.0f) {						
+						if (velocityX < -1000.0f && e1.getX()-e2.getX() > 500) {						
 							int position = getListView().pointToPosition((int)e1.getX(), (int)e1.getY());						
 							removeSwipeItem(position);
 						}					
@@ -105,25 +110,28 @@ public class MainActivity extends ListActivity {
 	@Override
 	public void onResume() {
 		super.onResume();
-		if (mAdapter.getCount() == 0)
-			loadItems();
+		if (mAdapter.getCount() != 0)
+			updatePrice();
 	}
 	
 	@Override
 	protected void onPause() {
 		super.onPause();
-
-		// Save ToDoItems
-
 		saveItems();
 
 	}
+
 	private void loadItems() {
-		
+
 	}
 	
 	private void saveItems() {
+		
+	}
 	
+	private void updatePrice() {
+		if(mAdapter != null)
+			new StockPriceService().execute(mAdapter);
 	}
 	
 	

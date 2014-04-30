@@ -7,11 +7,13 @@
     <TextView
         android:id="@+id/stockSymbol"
         android:layout_width="0dp"
-        android:layout_weight=".25"
+        android:layout_weight=".30"
         android:layout_height="wrap_content"
+        android:layout_marginTop="5sp"
+        android:layout_marginBottom="5sp"
         android:layout_marginLeft="10sp"
         android:textAppearance="?android:attr/textAppearanceLarge" 
-        android:textSize="30sp"
+        android:textSize="20sp"
         android:textColor="@android:color/black">
     </TextView>
     <TextView
@@ -19,19 +21,23 @@
         android:layout_width="0dp"
         android:layout_weight=".25"
         android:layout_height="wrap_content"
+        android:layout_marginTop="5sp"
+        android:layout_marginBottom="5sp"
         android:layout_marginLeft="10sp"
         android:textAppearance="?android:attr/textAppearanceLarge" 
-        android:textSize="30sp"
+        android:textSize="20sp"
         android:textColor="@android:color/black">
     </TextView>
     <TextView
         android:id="@+id/stockChange"
         android:layout_width="0dp"
-        android:layout_weight=".50"
+        android:layout_weight=".45"
         android:layout_height="wrap_content"
+        android:layout_marginTop="5sp"
+        android:layout_marginBottom="5sp"
         android:layout_marginLeft="10sp"
         android:textAppearance="?android:attr/textAppearanceLarge" 
-        android:textSize="30sp"
+        android:textSize="20sp"
         android:textColor="@android:color/black">
     </TextView>
 

@@ -9,7 +9,7 @@
     <TextView
         android:id="@+id/header_symbol"
         android:layout_width="0dp"
-        android:layout_weight=".25"
+        android:layout_weight=".30"
         android:layout_height="wrap_content"
         android:layout_gravity="left"
         android:layout_marginLeft="10sp"
@@ -33,7 +33,7 @@
     <TextView
         android:id="@+id/header_change"
         android:layout_width="0dp"
-        android:layout_weight=".50"
+        android:layout_weight=".45"
         android:layout_height="wrap_content"
         android:textStyle="bold"
         android:textSize="26sp"
