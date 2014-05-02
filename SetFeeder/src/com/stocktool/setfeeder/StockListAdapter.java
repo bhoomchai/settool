@@ -1,11 +1,9 @@
 package com.stocktool.setfeeder;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.stocktool.setfeeder.data.Stock;
-import com.stocktool.setfeeder.service.StockPriceService;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -14,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 
 public class StockListAdapter extends BaseAdapter {
@@ -91,7 +88,7 @@ public class StockListAdapter extends BaseAdapter {
 			return Color.rgb(0, 100, 0);
 		}
 		else if(text.contains("-")){
-			return Color.rgb(150, 0, 0);
+			return Color.rgb(200, 0, 0);
 		}
 		else
 			return Color.rgb(200, 100, 0);			

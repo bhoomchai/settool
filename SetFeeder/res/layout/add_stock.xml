@@ -5,15 +5,16 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-   	<EditText
+   	<AutoCompleteTextView
         android:id="@+id/stockSymbolEditText"
         android:hint="@string/stock_hint"
+        android:inputType="textCapCharacters"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:ems="10" >
-    </EditText>
+        android:ems="10">
+    </AutoCompleteTextView>
 
    	<Button
    	    android:id="@+id/addStockCancel"

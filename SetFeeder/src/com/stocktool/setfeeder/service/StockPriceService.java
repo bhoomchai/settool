@@ -8,24 +8,26 @@ import java.net.URLConnection;
 import java.util.List;
 
 import android.os.AsyncTask;
-import android.widget.ListView;
+import android.widget.Adapter;
+import android.widget.ArrayAdapter;
 
-import com.stocktool.setfeeder.MainActivity;
 import com.stocktool.setfeeder.StockListAdapter;
 import com.stocktool.setfeeder.data.Stock;
 
-public class StockPriceService extends AsyncTask<StockListAdapter, Integer, StockListAdapter> {
-
-	private void getPrices(List<Stock> stocks) throws IOException{
-		URL setUrl = new URL("http://www.settrade.com/C13_MarketSummaryStockType.jsp?type=S");		
-		URL maiUrl = new URL("http://www.settrade.com/C13_MarketSummarySET.jsp?command=MAI");
-		URL warUrl = new URL("http://www.settrade.com/C13_MarketSummaryStockType.jsp?type=W");
-		URLConnection connection;		
-		String setRawPage = "";
-		String maiRawPage = "";
-		String warRawPage = "";
+public class StockPriceService extends AsyncTask<Adapter, Integer, Adapter> {
+	
+	private URL setUrl, maiUrl, warUrl;
+	private String setRawPage = "";
+	String maiRawPage = "";
+	String warRawPage = "";
+	
+	private void getPrices(List<Stock> stocks) throws IOException{	
+		setUrl = new URL("http://www.settrade.com/C13_MarketSummaryStockType.jsp?type=S");		
+		maiUrl = new URL("http://www.settrade.com/C13_MarketSummarySET.jsp?command=MAI");
+		warUrl = new URL("http://www.settrade.com/C13_MarketSummaryStockType.jsp?type=W");
+		URLConnection connection;
 		String line;
-		StringBuffer buffer;
+		StringBuffer buffer;	
 		
 		// get SET info and keep in setRawPage
 		connection = setUrl.openConnection();
@@ -59,7 +61,7 @@ public class StockPriceService extends AsyncTask<StockListAdapter, Integer, Stoc
 		}
 		warRawPage = buffer.toString();
 		in.close();
-				
+		
 		double price = 100;
 		double change = 5;
 		double percentChange = 6;
@@ -97,11 +99,71 @@ public class StockPriceService extends AsyncTask<StockListAdapter, Integer, Stoc
 	    	}	    	    	
 	    }	    
 	}
+	
+	private void getAllStockList(ArrayAdapter<String> stockAdapter)  throws IOException{
+		setUrl = new URL("http://www.settrade.com/C13_MarketSummaryStockType.jsp?type=S");		
+		maiUrl = new URL("http://www.settrade.com/C13_MarketSummarySET.jsp?command=MAI");
+		warUrl = new URL("http://www.settrade.com/C13_MarketSummaryStockType.jsp?type=W");
+		URLConnection connection;
+		String line;
+		StringBuffer buffer;	
+		
+		// get SET info and keep in setRawPage
+		connection = setUrl.openConnection();
+		BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+		line = "";
+		buffer = new StringBuffer();
+		while((line = in.readLine()) != null) {
+			buffer.append(line);			
+		}
+		setRawPage = buffer.toString();
+		in.close();
+		
+		// get MAI info and keep in maiRawPage
+		connection = maiUrl.openConnection();
+		in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+		line = "";
+		buffer = new StringBuffer();
+		while((line = in.readLine()) != null) {
+			buffer.append(line);			
+		}		
+		maiRawPage = buffer.toString();
+		in.close();
+		
+		// get Warrant info and keep in setWarPage
+		connection = warUrl.openConnection();
+		in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+		line = "";
+		buffer = new StringBuffer();
+		while((line = in.readLine()) != null) {
+			buffer.append(line);			
+		}
+		warRawPage = buffer.toString();
+		in.close();
+		
+		// Parse setRawPage and extract stock symbol to stockList
+		while(setRawPage.indexOf("jsp?txtSymbol=")!=-1) {
+			setRawPage = setRawPage.substring(setRawPage.indexOf("jsp?txtSymbol=")+14);
+			stockAdapter.add(setRawPage.substring(0, setRawPage.indexOf("\"")));			
+		}	
+		// Parse maiRawPage and extract stock symbol to stockList
+		while(setRawPage.indexOf("jsp?txtSymbol=")!=-1) {
+			maiRawPage = maiRawPage.substring(maiRawPage.indexOf("jsp?txtSymbol=")+14);
+			stockAdapter.add(maiRawPage.substring(0, maiRawPage.indexOf("\"")));			
+		}
+		// Parse warRawPage and extract stock symbol to stockList
+		while(warRawPage.indexOf("jsp?txtSymbol=")!=-1) {
+			warRawPage = warRawPage.substring(warRawPage.indexOf("jsp?txtSymbol=")+14);
+			stockAdapter.add(warRawPage.substring(0, warRawPage.indexOf("\"")));			
+		}
+	}
 
 	@Override
-	protected StockListAdapter doInBackground(StockListAdapter... params) {
+	protected Adapter doInBackground(Adapter... params) {
 		try {			
-			getPrices(params[0].getStockList());
+			if(params.length>1 && params[1] instanceof ArrayAdapter && params[1].isEmpty())
+				getAllStockList((ArrayAdapter<String>)params[1]);
+			getPrices(((StockListAdapter)params[0]).getStockList());
 		}
 		catch (IOException e) {
 			e.printStackTrace();
@@ -111,8 +173,8 @@ public class StockPriceService extends AsyncTask<StockListAdapter, Integer, Stoc
 	
 	
 	@Override
-	protected void onPostExecute(StockListAdapter result) {
+	protected void onPostExecute(Adapter result) {
 		super.onPostExecute(result);
-		result.notifyDataSetChanged();
+		((StockListAdapter)result).notifyDataSetChanged();
 	}
 }

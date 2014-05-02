@@ -1,7 +1,5 @@
 package com.stocktool.setfeeder;
 
-import java.io.IOException;
-
 import com.stocktool.setfeeder.data.Stock;
 import com.stocktool.setfeeder.service.StockPriceService;
 
@@ -15,19 +13,23 @@ import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends ListActivity {
 
 	private static final int ADD_STOCK_REQUST = 0;
-	StockListAdapter mAdapter;
+	private StockListAdapter mAdapter;
+	private static ArrayAdapter<String> mAllStocksAdapter;
 	private GestureDetectorCompat mGestureDetector;
+	
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 		mAdapter = new StockListAdapter(getApplicationContext());
+		mAllStocksAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1);
 		
 		getListView().setFooterDividersEnabled(true);
 		LayoutInflater inflater = getLayoutInflater();
@@ -131,8 +133,10 @@ public class MainActivity extends ListActivity {
 	
 	private void updatePrice() {
 		if(mAdapter != null)
-			new StockPriceService().execute(mAdapter);
+			new StockPriceService().execute(mAdapter, mAllStocksAdapter);
 	}
 	
-	
+	public static ArrayAdapter<String> getAllStocksAdapter() {
+		return mAllStocksAdapter;
+	}
 }
