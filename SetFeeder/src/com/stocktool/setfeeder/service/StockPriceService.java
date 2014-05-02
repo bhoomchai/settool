@@ -11,6 +11,8 @@ import android.os.AsyncTask;
 import android.widget.Adapter;
 import android.widget.ArrayAdapter;
 
+import com.stocktool.setfeeder.MainActivity;
+import com.stocktool.setfeeder.R;
 import com.stocktool.setfeeder.StockListAdapter;
 import com.stocktool.setfeeder.data.Stock;
 
@@ -171,10 +173,22 @@ public class StockPriceService extends AsyncTask<Adapter, Integer, Adapter> {
 		return params[0];
 	}
 	
+	@Override
+	protected void onPreExecute() {		
+		if(MainActivity.getRefreshMenuItem() != null) { 
+		MainActivity.getRefreshMenuItem().setActionView(R.layout.action_progressbar);
+		MainActivity.getRefreshMenuItem().expandActionView(); 
+		}
+	}
+	
 	
 	@Override
 	protected void onPostExecute(Adapter result) {
 		super.onPostExecute(result);
 		((StockListAdapter)result).notifyDataSetChanged();
+		if(MainActivity.getRefreshMenuItem() != null) {
+			MainActivity.getRefreshMenuItem().collapseActionView();
+			MainActivity.getRefreshMenuItem().setActionView(null);
+		}
 	}
 }

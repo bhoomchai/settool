@@ -4,12 +4,14 @@ import com.stocktool.setfeeder.data.Stock;
 import com.stocktool.setfeeder.service.StockPriceService;
 
 import android.os.Bundle;
+import android.app.ActionBar;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.support.v4.view.GestureDetectorCompat;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -24,6 +26,10 @@ public class MainActivity extends ListActivity {
 	private static ArrayAdapter<String> mAllStocksAdapter;
 	private GestureDetectorCompat mGestureDetector;
 	
+	// action bar
+    private ActionBar actionBar;
+    // Refresh menu item
+    private static MenuItem refreshMenuItem;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState){
@@ -106,7 +112,22 @@ public class MainActivity extends ListActivity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.main, menu);
+		refreshMenuItem = (MenuItem)findViewById(R.layout.action_progressbar);
 		return true;
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(android.view.MenuItem item) {
+		switch(item.getItemId()){
+		case R.id.action_refresh:
+			refreshMenuItem = item;
+			updatePrice();
+			return true;
+		case R.id.action_settings:
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
 	}
 
 	@Override
@@ -138,5 +159,9 @@ public class MainActivity extends ListActivity {
 	
 	public static ArrayAdapter<String> getAllStocksAdapter() {
 		return mAllStocksAdapter;
+	}
+	
+	public static MenuItem getRefreshMenuItem() {
+		return refreshMenuItem;
 	}
 }
