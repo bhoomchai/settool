@@ -176,8 +176,8 @@ public class StockPriceService extends AsyncTask<Adapter, Integer, Adapter> {
 	@Override
 	protected void onPreExecute() {		
 		if(MainActivity.getRefreshMenuItem() != null) { 
-		MainActivity.getRefreshMenuItem().setActionView(R.layout.action_progressbar);
-		MainActivity.getRefreshMenuItem().expandActionView(); 
+			MainActivity.getRefreshMenuItem().setActionView(R.layout.action_progressbar);
+			MainActivity.getRefreshMenuItem().expandActionView(); 
 		}
 	}
 	

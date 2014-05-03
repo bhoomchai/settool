@@ -51,7 +51,6 @@ public class MainActivity extends ListActivity {
 			}
 		});		
 		getListView().setAdapter(mAdapter);
-		updatePrice();
 		setupGestureDetector();
 		getListView().setOnTouchListener(new View.OnTouchListener() {
 			
@@ -112,7 +111,8 @@ public class MainActivity extends ListActivity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.main, menu);
-		refreshMenuItem = (MenuItem)findViewById(R.layout.action_progressbar);
+		refreshMenuItem = (MenuItem)menu.findItem(R.id.action_refresh);
+		updatePrice();
 		return true;
 	}
 	
@@ -133,7 +133,7 @@ public class MainActivity extends ListActivity {
 	@Override
 	public void onResume() {
 		super.onResume();
-		if (mAdapter.getCount() != 0)
+		if (mAdapter.getCount() != 0 && refreshMenuItem != null)
 			updatePrice();
 	}
 	
