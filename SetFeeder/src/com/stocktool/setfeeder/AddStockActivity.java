@@ -39,6 +39,7 @@ public class AddStockActivity extends Activity {
 		submitButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				
 				String stockSymbol = mStockText.getText().toString();
 				Intent data = new Intent();
 				data.putExtra(STOCK_SYMBOL, stockSymbol);

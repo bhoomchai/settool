@@ -23,5 +23,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".AddStockActivity" />
+        <provider 
+            android:name=".data.provider.StockListContentProvider" 
+            android:authorities="com.stocktool.setfeeder.data.provider"
+            android:exported="true"/>
     </application>	
 </manifest>

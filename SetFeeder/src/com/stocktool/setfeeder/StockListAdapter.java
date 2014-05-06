@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class StockListAdapter extends BaseAdapter {
 
@@ -23,15 +24,18 @@ public class StockListAdapter extends BaseAdapter {
 	
 	StockListAdapter(Context context) {
 		mContext = context;
-		mItems.add(new Stock("AP"));
+/*		mItems.add(new Stock("AP"));
 		mItems.add(new Stock("ASP"));
 		mItems.add(new Stock("CPF"));
-		mItems.add(new Stock("CPALL"));
+		mItems.add(new Stock("CPALL"));*/
 	}
 	
 	public void add(Stock stock) {
-		mItems.add(stock);
-		notifyDataSetChanged();
+		// Do nothing when adding the existing stock
+		if(!isExist(stock.getSymbol())) {
+			mItems.add(stock);		
+			notifyDataSetChanged();
+		}
 	}
 	
 	public void remove(Stock stock) {
@@ -97,6 +101,14 @@ public class StockListAdapter extends BaseAdapter {
 	
 	public List<Stock> getStockList() {
 		return mItems;
+	}
+	
+	public boolean isExist(String symbol) {
+		for(Stock s : mItems) {
+			if(s.getSymbol().equals(symbol))
+				return true;
+		}
+		return false;
 	}
 
 }

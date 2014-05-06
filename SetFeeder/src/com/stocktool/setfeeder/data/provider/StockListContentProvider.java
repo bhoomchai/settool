@@ -78,7 +78,7 @@ public class StockListContentProvider extends ContentProvider {
 
 	@Override
 	public int delete(Uri uri, String selection, String[] selectionArgs) {
-		int rowsDeleted = database.delete(StockListContract.STOCKS_TABLE_NAME, null, null);
+		int rowsDeleted = database.delete(StockListContract.STOCKS_TABLE_NAME, selection, selectionArgs);
 		getContext().getContentResolver().notifyChange(StockListContract.CONTENT_URI, null);
 		return rowsDeleted;
 	}

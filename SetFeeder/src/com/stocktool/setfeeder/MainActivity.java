@@ -1,12 +1,15 @@
 package com.stocktool.setfeeder;
 
 import com.stocktool.setfeeder.data.Stock;
+import com.stocktool.setfeeder.data.provider.StockListContract;
 import com.stocktool.setfeeder.service.StockPriceService;
 
 import android.os.Bundle;
 import android.app.ActionBar;
 import android.app.ListActivity;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
 import android.support.v4.view.GestureDetectorCompat;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
@@ -35,6 +38,7 @@ public class MainActivity extends ListActivity {
 	protected void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 		mAdapter = new StockListAdapter(getApplicationContext());
+		loadItems();
 		mAllStocksAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1);
 		
 		getListView().setFooterDividersEnabled(true);
@@ -70,7 +74,7 @@ public class MainActivity extends ListActivity {
 				new GestureDetector.SimpleOnGestureListener () {
 					@Override
 					public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-						if (velocityX < -1000.0f && e1.getX()-e2.getX() > 500) {						
+						if (velocityX < -800.0f && e1.getX()-e2.getX() > 300) {						
 							int position = getListView().pointToPosition((int)e1.getX(), (int)e1.getY());						
 							removeSwipeItem(position);
 						}					
@@ -85,9 +89,17 @@ public class MainActivity extends ListActivity {
 	}
 	
 	private void removeSwipeItem(int position) {
-		if(position != -1) {
-			Toast.makeText(this, ((Stock)getListView().getAdapter().getItem(position)).getSymbol() + " is removed", Toast.LENGTH_SHORT).show();
-			mAdapter.remove((Stock)getListView().getAdapter().getItem(position));
+		if(position != -1) {			
+			Stock removedStock = (Stock)getListView().getAdapter().getItem(position);
+			// Remove stock from Adapter			
+			mAdapter.remove(removedStock);
+			// Delete stock from content provider
+			String[] selectionArgs = {removedStock.getSymbol()};
+			String selection = StockListContract.SYMBOL + "=?";
+			getContentResolver().delete(StockListContract.CONTENT_URI, selection, selectionArgs);
+			Toast.makeText(this, 
+					((Stock)getListView().getAdapter().getItem(position)).getSymbol() + " is removed", 
+					Toast.LENGTH_SHORT).show();
 		}
 	}
 	
@@ -102,7 +114,17 @@ public class MainActivity extends ListActivity {
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if(requestCode == ADD_STOCK_REQUST 
 				&& resultCode == RESULT_OK) {
-			mAdapter.add(new Stock(data.getStringExtra(AddStockActivity.STOCK_SYMBOL)));			
+			String newAddedStock = data.getStringExtra(AddStockActivity.STOCK_SYMBOL);
+			if(mAdapter.isExist(newAddedStock)) {
+				Toast.makeText(this, "The stock symbol is already exist.", Toast.LENGTH_LONG).show();
+			} else {
+				// Add new stock to Adapter
+				mAdapter.add(new Stock(newAddedStock));
+				// Persist new stock content provider
+				ContentValues mNewValues = new ContentValues();
+				mNewValues.put(StockListContract.SYMBOL, newAddedStock);
+				getContentResolver().insert(StockListContract.CONTENT_URI, mNewValues);
+			}
 		}
 
 	}
@@ -145,7 +167,14 @@ public class MainActivity extends ListActivity {
 	}
 
 	private void loadItems() {
-
+		if(mAdapter != null) {
+			Cursor cursor = getContentResolver().query(StockListContract.CONTENT_URI, null, null, null, null);
+			if(cursor != null) {
+				while(cursor.moveToNext()) {
+					mAdapter.add(new Stock(cursor.getString(0)));
+				}
+			}
+		}
 	}
 	
 	private void saveItems() {
